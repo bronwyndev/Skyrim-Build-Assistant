@@ -108,7 +108,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   }, [FabricJSCanvas, perks]);
 
-  return <FabricJSCanvas className="sample-canvas" onReady={onReady} />;
+  return <FabricJSCanvas className="perktree__canvas" onReady={onReady} />;
 };
 
 export default PerkTreeList;

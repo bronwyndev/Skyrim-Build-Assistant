@@ -34,8 +34,13 @@
     border: 1px solid rgba(var(--color-primary), 0.2);
     height: var(--slide-height);
   }
-  .sample-canvas {
+  .perktree__canvas {
     height: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .perktree__canvas .canvas-container {
+    max-width: 360px;
   }
   .embla__controls {
     position: absolute;

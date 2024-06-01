@@ -31,7 +31,7 @@ const Carousel: React.FC<PropType> = (props) => {
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">
           {slides.map((tree, index) => (
-            <div className="embla__slide" key={index}>
+            <div className={`embla__slide embla__slide__${tree.domain}`} key={index}>
               <div className="embla__slide__content">
                 <PerkTreeList perks={tree.perks} />
                 <div className="embla__slide__title">{tree.name}</div>

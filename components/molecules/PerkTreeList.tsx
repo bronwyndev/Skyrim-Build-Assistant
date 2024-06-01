@@ -1,69 +1,98 @@
-'use client'
-
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { fabric } from 'fabric';
+import { FabricJSCanvas, useFabricJSEditor  } from 'fabricjs-react';
 import { Perk, PerkTree } from '../../models/perk';
 
 type PropType = {
   perks: PerkTree['perks'];
 };
 
-
 const PerkTreeList: React.FC<PropType> = (props) => {
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { perks } = props;
+  const canvasRef = useRef<fabric.Canvas | null>(null);
+  const { selectedObjects, editor, onReady } = useFabricJSEditor();
 
   useEffect(() => {
 
-    const canvas = canvasRef.current;
-    if (!canvas) return; // Shouldn't happen, but just in case...
+    if (editor?.canvas) {
+      console.log(editor.canvas);
+      editor.canvas.setDimensions({width:editor.canvas.wrapperEl?.clientWidth, height:editor.canvas.wrapperEl?.clientHeight});
+      //editor.canvas.width = editor.canvas.parentElement?.clientWidth || 0;
+      //editor.canvas.height = editor.canvas.parentElement?.clientHeight || 0;
+    }
+      // Create an object to store the fabric circles representing the perks
+      const perkCircles = {};
 
-    const context = canvas.getContext('2d');
-    if (!context) return; // Shouldn't happen, but just in case...
+      // Loop through the perks and create circles
+      perks.forEach((perk) => {
+        // Convert percentage coordinates to pixel values
+        let x = perk.coords.x * editor?.canvas.width / 100;
+        let y = perk.coords.y * editor?.canvas.height / 100;
 
-    let previousPerk: Perk | null = null;
+        // Create a circle for the perk
+        var circle = new fabric.Circle({
+          left: x,
+          top: y,
+          radius: 8,
+          fill: 'yellow',
+          shadow: 'yellow 0px 0px 10px',
+          selectable: false,
+          originX: 'center',
+          originY: 'center',
+        });
 
-    // Loop through the perks, and let's draw!
-    perks.forEach((perk) => {
-      
-      // Check for previous perk, if yes then let's draw a connecting lines
-      // We do this first so that the lines are drawn below the stars
-      if (previousPerk) {
-        context.beginPath();
-        context.moveTo(previousPerk.coords.x, previousPerk.coords.y);
-        context.lineTo(perk.coords.x, perk.coords.y);
-        context.lineWidth = 2;
-        context.strokeStyle = 'yellow';
-        context.stroke();
-      }
+        // Add a 'mouse:down' event listener to the circle
+        circle.on('mousedown', function() {
+          // Display the title of the perk when the circle is clicked
+          alert(perk.name);
+        });  
+        // Add a 'mouse:over' event listener to the circle
+        circle.on('mouseover', function() {
+          // Increase the glow of the circle when the mouse hovers over it
+          circle.set({ radius: 10 });
+          circle.set({ shadow: 'yellow 0px 0px 15px' });
+          editor?.canvas.renderAll();
+        });
 
-      // Let's draw a star for the perk
-      context.beginPath();
-      context.arc(perk.coords.x, perk.coords.y, 6, 0, 2 * Math.PI);
-      context.fillStyle = 'yellow';
-      context.shadowColor = 'yellow';
-      context.shadowBlur = 8;
-      context.shadowOffsetX = 0;
-      context.shadowOffsetY = 0;
-      context.fill();
+        // Add a 'mouse:out' event listener to the circle
+        circle.on('mouseout', function() {
+          // Decrease the glow of the circle when the mouse leaves
+          circle.set({ radius: 8 });
+          circle.set({ shadow: 'yellow 0px 0px 10px' });
+          editor?.canvas.renderAll();
+        });
+        // Add the circle to the canvas
+        editor?.canvas.add(circle);
 
-      // Reset shadow properties so it doesn't affect other drawings
-      context.shadowColor = 'transparent';
-      context.shadowBlur = 0;
-      context.shadowOffsetX = 0;
-      context.shadowOffsetY = 0;
+        // Store the circle in the perkCircles object
+        perkCircles[perk.id] = circle;
+      });
 
-      // Set previous perk to current perk, so that we can draw a line to it in the next iteration
-      previousPerk = perk;
+      // Loop through the perks again to draw lines
+      perks.forEach((perk) => {
+        if (perk.prereq) {
+          const startPerk = perkCircles[perk.prereq];
+          const endPerk = perkCircles[perk.id];
 
-    });
+          if (startPerk && endPerk) {
+            var line = new fabric.Line(
+              [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
+              {
+                stroke: 'white',
+                strokeWidth: 2,
+                selectable: false
+              }
+            );
 
-  }, []);
+            // Add the line to the canvas
+            editor?.canvas.add(line);
+          }
+        }
+      });
+    
+  }, [FabricJSCanvas, perks]);
 
-  return (
-    <canvas ref={canvasRef}>
-    </canvas>
-  );
+  return <FabricJSCanvas className="sample-canvas" onReady={onReady} />;
 };
 
 export default PerkTreeList;

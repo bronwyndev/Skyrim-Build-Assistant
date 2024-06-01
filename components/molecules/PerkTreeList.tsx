@@ -14,14 +14,12 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   useEffect(() => {
 
+    // First let's set the dimensions of the canvas to fit that of its container.
     if (editor?.canvas) {
-      console.log(editor.canvas);
       editor.canvas.setDimensions({width:editor.canvas.wrapperEl?.clientWidth, height:editor.canvas.wrapperEl?.clientHeight});
-      //editor.canvas.width = editor.canvas.parentElement?.clientWidth || 0;
-      //editor.canvas.height = editor.canvas.parentElement?.clientHeight || 0;
     }
       // Create an object to store the fabric circles representing the perks
-      const perkCircles = {};
+      const perkCircles: { [key: string]: fabric.Circle } = {};
 
       // Loop through the perks and create circles
       perks.forEach((perk) => {

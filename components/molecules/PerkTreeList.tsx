@@ -18,6 +18,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     if (editor?.canvas) {
       editor.canvas.setDimensions({width:editor.canvas.wrapperEl?.clientWidth, height:editor.canvas.wrapperEl?.clientHeight});
     }
+    
       // Create an object to store the fabric circles representing the perks
       const perkCircles: { [key: string]: fabric.Circle } = {};
 
@@ -32,8 +33,8 @@ const PerkTreeList: React.FC<PropType> = (props) => {
           left: x,
           top: y,
           radius: 8,
-          fill: 'yellow',
-          shadow: 'yellow 0px 0px 10px',
+          fill: '#fffac6',
+          shadow: '#fffac6 0px 0px 10px',
           selectable: false,
           originX: 'center',
           originY: 'center',
@@ -48,7 +49,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         circle.on('mouseover', function() {
           // Increase the glow of the circle when the mouse hovers over it
           circle.set({ radius: 10 });
-          circle.set({ shadow: 'yellow 0px 0px 15px' });
+          circle.set({ shadow: '#fffac6 0px 0px 15px' });
           editor?.canvas.renderAll();
         });
 
@@ -56,7 +57,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         circle.on('mouseout', function() {
           // Decrease the glow of the circle when the mouse leaves
           circle.set({ radius: 8 });
-          circle.set({ shadow: 'yellow 0px 0px 10px' });
+          circle.set({ shadow: '#fffac6 0px 0px 10px' });
           editor?.canvas.renderAll();
         });
         // Add the circle to the canvas
@@ -67,6 +68,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       });
 
       // Loop through the perks again to draw lines
+      // We should loop through these first so that the lines are drawn below the circles
       perks.forEach((perk) => {
         if (perk.prereq) {
           const startPerk = perkCircles[perk.prereq];
@@ -76,9 +78,10 @@ const PerkTreeList: React.FC<PropType> = (props) => {
             var line = new fabric.Line(
               [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
               {
-                stroke: 'white',
+                stroke: '#aaf9ff',
                 strokeWidth: 2,
-                selectable: false
+                selectable: false,
+                shadow: '#aaf9ff 0px 0px 5px'
               }
             );
 
@@ -87,7 +90,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
           }
         }
       });
-    
+
   }, [FabricJSCanvas, perks]);
 
   return <FabricJSCanvas className="sample-canvas" onReady={onReady} />;

@@ -29,12 +29,27 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         let y = perk.coords.y * editor?.canvas.height / 100;
 
         // Create a circle for the perk
+        // This one stacks below the main perk circle, to give a more dynamic glow
+        var circle = new fabric.Circle({
+          left: x,
+          top: y,
+          radius: 8,
+          fill: 'red',
+          shadow: 'red 0px 0px 15px',
+          selectable: false,
+          originX: 'center',
+          originY: 'center',
+        });
+        // Add the circle to the canvas
+        editor?.canvas.add(circle);
+
+        // Create a circle for the perk
         var circle = new fabric.Circle({
           left: x,
           top: y,
           radius: 8,
           fill: '#fffac6',
-          shadow: '#fffac6 0px 0px 10px',
+          shadow: 'yellow 0px 0px 10px',
           selectable: false,
           originX: 'center',
           originY: 'center',
@@ -49,10 +64,10 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         circle.on('mouseover', function() {
           // Increase the glow of the circle when the mouse hovers over it
           circle.set({ radius: 10 });
+          circle.set({ fill: 'yellow' });
           circle.set({ shadow: '#fffac6 0px 0px 15px' });
           editor?.canvas.renderAll();
         });
-
         // Add a 'mouse:out' event listener to the circle
         circle.on('mouseout', function() {
           // Decrease the glow of the circle when the mouse leaves

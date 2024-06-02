@@ -85,8 +85,8 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Loop through the perks again to draw lines
       // We should loop through these first so that the lines are drawn below the circles
       perks.forEach((perk) => {
-        if (perk.prereq) {
-          const startPerk = perkCircles[perk.prereq];
+        perk.prereq?.forEach((prereqId) => {
+          const startPerk = perkCircles[prereqId];
           const endPerk = perkCircles[perk.id];
 
           if (startPerk && endPerk) {
@@ -99,11 +99,15 @@ const PerkTreeList: React.FC<PropType> = (props) => {
                 shadow: '#aaf9ff 0px 0px 5px'
               }
             );
-
+            line.sendToBack();
             // Add the line to the canvas
             editor?.canvas.add(line);
           }
-        }
+        });
+      });
+
+      Object.values(perkCircles).forEach(circle => {
+        circle.bringToFront();
       });
 
   }, [FabricJSCanvas, perks]);

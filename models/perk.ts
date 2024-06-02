@@ -4,7 +4,7 @@ export interface Perk {
     description: string;
     ranks: number;
     coords: { x: number, y: number };
-    prereq: string | null;
+    prereq: string[] | null;
   }
   
   export interface PerkTree {

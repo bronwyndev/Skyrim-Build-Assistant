@@ -2,7 +2,7 @@ import { PerkTree } from '../models/perk';
 
 export const perkTrees: PerkTree[] = [
   {
-    id: 'alch',
+    id: 'illu',
     name: 'Illusion',
     domain: 'Magic',
     canvasSize: 'large',

@@ -60,6 +60,10 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         circle.on('mousedown', function() {
           // Display the title of the perk when the circle is clicked
           alert(perk.name);
+          circle.set({ radius: 10 });
+          circle.set({ fill: 'yellow' });
+          circle.set({ shadow: '#fffac6 0px 0px 15px' });
+          circle.clicked = true;
         });  
         // Add a 'mouse:over' event listener to the circle
         circle.on('mouseover', function() {
@@ -71,10 +75,13 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         });
         // Add a 'mouse:out' event listener to the circle
         circle.on('mouseout', function() {
-          // Decrease the glow of the circle when the mouse leaves
-          circle.set({ radius: 8 });
-          circle.set({ shadow: '#fffac6 0px 0px 10px' });
-          editor?.canvas.renderAll();
+          if (!circle.clicked) {
+            // Decrease the glow of the circle when the mouse leaves
+            circle.set({ radius: 8 });
+            circle.set({ fill: '#fffac6' });
+            circle.set({ shadow: '#fffac6 0px 0px 10px' });
+            editor?.canvas.renderAll();
+          }
         });
         // Add the circle to the canvas
         editor?.canvas.add(circle);

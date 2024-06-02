@@ -11,5 +11,6 @@ export interface Perk {
     id: string;
     name: string;
     domain: string;
+    canvasSize: string;
     perks: Perk[];
   }

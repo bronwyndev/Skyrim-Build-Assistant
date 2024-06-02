@@ -5,6 +5,7 @@ import { Perk, PerkTree } from '../../models/perk';
 
 type PropType = {
   perks: PerkTree['perks'];
+  canvasSize: string;
 };
 
 const PerkTreeList: React.FC<PropType> = (props) => {
@@ -112,7 +113,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   }, [FabricJSCanvas, perks]);
 
-  return <FabricJSCanvas className="perktree__canvas" onReady={onReady} />;
+  return <FabricJSCanvas className={`perktree__canvas perktree__canvas__${props.canvasSize}`} onReady={onReady} />;
 };
 
 export default PerkTreeList;

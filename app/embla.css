@@ -3,7 +3,7 @@
     margin: auto;
     --slide-height: 36rem;
     --slide-spacing: 1rem;
-    --slide-size: 80%;
+    --slide-size: 38.75rem;
   }
   .embla__viewport {
     overflow: hidden;
@@ -33,6 +33,7 @@
   .embla__slide__content {
     border: 1px solid rgba(var(--color-primary), 0.2);
     height: var(--slide-height);
+    position: relative
   }
   .perktree__canvas {
     height: 100%;
@@ -40,7 +41,11 @@
     justify-content: center;
   }
   .perktree__canvas .canvas-container {
-    max-width: 360px;
+    max-width: 23rem;
+    border: 1px solid rgb(255, 255, 255, 0.3);
+  }
+  .perktree__canvas.perktree__canvas__large .canvas-container {
+    max-width: 38.75rem;
   }
   .embla__controls {
     position: absolute;

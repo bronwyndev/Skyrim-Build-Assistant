@@ -70,12 +70,22 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Add a line between the clicked perk and its prerequisite
       addHighlightedLine(perkCircles[perk.prereq[0]], circleTop);
       
-      // Recursively set the prerequisites as clicked
+      // Recursively set the prerequisites as "clicked"
       enhanceCircle(prereqCircle);
       setCircleClicked(prereqCircle, prereqPerk);
     }
   
     circleTop.clicked = true;
+  }
+
+  function resetCircleClicked(circleTop: fabric.Circle) {
+    if (circleTop.clicked) {
+      // Reset the circle's properties to their default state
+      resetCircle(circleTop);
+  
+      // Update the clicked status
+      circleTop.clicked = false;
+    }
   }
 
   // When a perk is clicked, highlight the line between it and its prerequisite
@@ -118,8 +128,8 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       // Add a 'mouse:down' event listener to the circle
       circleTop.on('mousedown', function() {
-        enhanceCircle(circleTop);
-        setCircleClicked(circleTop, perk);
+        // Determine if perk has already been clicked, then either enhance or reset the circle
+        !circleTop.clicked ? (enhanceCircle(circleTop), setCircleClicked(circleTop, perk)) : resetCircleClicked(circleTop);
       });  
       // Add a 'mouse:over' event listener to the circle
       circleTop.on('mouseover', function() {
@@ -167,6 +177,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       });
     });
 
+    // Bring the circles to the front of the canvas so that they layer on top of the lines
     Object.values(perkCircles).forEach(circle => {
       circle.bringToFront();
     });

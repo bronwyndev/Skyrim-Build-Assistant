@@ -28,7 +28,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   }
 
   // Create a circle object
-  function createCircle(x: number, y: number, radius: number, id: string, fill: string, shadow: string, circleBottom: fabric.Circle | null = null) {
+  function createCircle(x: number, y: number, radius: number, id: string, type: string, fill: string, shadow: string, circleBottom: fabric.Circle | null = null) {
     return new fabric.Circle({
       left: x,
       top: y,
@@ -38,10 +38,25 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       selectable: false,
       originX: 'center',
       originY: 'center',
-      id: id,
+      id: id + type,
+      uniqueID: id,
       circleBottom: circleBottom,
-      cursor: 'pointer',
+      hoverCursor: 'pointer',
     });
+  }
+
+  function createPerkLine(startPerk: fabric.Circle, endPerk: fabric.Circle, lineColor: string, width: number, shadow: string, opacity: number) {
+    return new fabric.Line(
+      [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
+      {
+        stroke: '#aaf9ff',
+        strokeWidth: 2,
+        selectable: false,
+        shadow: '#aaf9ff 0px 0px 5px',
+        opacity: 0.5,
+        hoverCursor: 'initial',
+      }
+    );
   }
 
   // Enhance the circle by increasing its radius and changing its color
@@ -58,7 +73,9 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   // Set the circle as clicked and recursively set its prerequisites as clicked
   function setCircleClicked(circleTop: fabric.Circle, perk: Perk) {
+    enhanceCircle(circleTop);
     if (!circleTop.clicked && perk.prereq) {
+      console.log(perk);
       const prereqCircle = getCircleById(perk.prereq[0]);
       const prereqPerk = getPerkById(perk.prereq[0]);
   
@@ -85,6 +102,22 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   
       // Update the clicked status
       circleTop.clicked = false;
+
+      removeLineById('lineTo_'+circleTop.id);
+
+      const parents = perks.filter(parentPerk => parentPerk.prereq && parentPerk.prereq.includes(circleTop.uniqueID));
+      if (parents) {
+        parents.forEach((parent) => {
+          resetCircleClicked(getCircleById(parent.id));
+        });
+      }
+    }
+  }
+
+  function removeLineById(id: string) {
+    const line = editor?.canvas.getObjects().find(obj => obj.id === id);
+    if (line) {
+      editor?.canvas.remove(line);
     }
   }
 
@@ -94,11 +127,12 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     var line = new fabric.Line(
       [prereqPerk.left, prereqPerk.top, endPerk.left, endPerk.top],
       {
+        id: 'lineTo_'+endPerk.id,
         stroke: '#aaf9ff',
         strokeWidth: 2,
         selectable: false,
         shadow: '#aaf9ff 0px 0px 5px',
-        opacity: 1
+        opacity: 1,
       }
     );
     editor?.canvas.add(line);
@@ -120,16 +154,16 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       // Create a layering circle
       // This one stacks below the main perk circle, to give a more dynamic glow
-      var circleBottom = createCircle(x, y, 7, perk.id + 'CircleBottom', 'purple', 'purple 0px 0px 15px');
+      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px');
       editor?.canvas.add(circleBottom);
 
       // Create the main circle for the perk
-      var circleTop = createCircle(x, y, 7, perk.id + 'CircleTop', '#bcebfd', '#bcebfd 0px 0px 10px', circleBottom);
+      var circleTop = createCircle(x, y, 7, perk.id, 'CircleTop', '#bcebfd', '#bcebfd 0px 0px 10px', circleBottom);
 
       // Add a 'mouse:down' event listener to the circle
       circleTop.on('mousedown', function() {
         // Determine if perk has already been clicked, then either enhance or reset the circle
-        !circleTop.clicked ? (enhanceCircle(circleTop), setCircleClicked(circleTop, perk)) : resetCircleClicked(circleTop);
+        !circleTop.clicked ? setCircleClicked(circleTop, perk) : resetCircleClicked(circleTop);
       });  
       // Add a 'mouse:over' event listener to the circle
       circleTop.on('mouseover', function() {

@@ -75,21 +75,49 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   function setCircleClicked(circleTop: fabric.Circle, perk: Perk) {
     enhanceCircle(circleTop);
     if (!circleTop.clicked && perk.prereq) {
-      console.log(perk);
-      const prereqCircle = getCircleById(perk.prereq[0]);
-      const prereqPerk = getPerkById(perk.prereq[0]);
-  
-      if (!prereqCircle || !prereqPerk) {
-        console.error(`Prerequisite circle or perk not found for ID ${perk.prereq[0]}`);
-        return;
+
+      var pathfound = false;
+      
+      for (let i = 0; i < perk.prereq.length; i++) {
+        
+        const prereqCircle = getCircleById(perk.prereq[i]);
+        const prereqPerk = getPerkById(perk.prereq[i]);
+
+        if (!prereqCircle || !prereqPerk) {
+          console.error(`Prerequisite circle or perk not found for ID ${perk.prereq[0]}`);
+          return;
+        }
+        
+        if (prereqCircle && prereqCircle.clicked) {
+          // Add a line between the clicked perk and its prerequisite
+          addHighlightedLine(perkCircles[perk.prereq[i]], circleTop);
+          
+          // Recursively set the prerequisites as "clicked"
+          enhanceCircle(prereqCircle);
+          setCircleClicked(prereqCircle, prereqPerk);
+          var pathfound = true;
+        }
+
+      }
+
+      if (!pathfound) {
+
+        const prereqCircle = getCircleById(perk.prereq[0]);
+        const prereqPerk = getPerkById(perk.prereq[0]);
+
+        if (!prereqCircle || !prereqPerk) {
+          console.error(`Prerequisite circle or perk not found for ID ${perk.prereq[0]}`);
+          return;
+        }
+        
+        // Add a line between the clicked perk and its prerequisite
+        addHighlightedLine(perkCircles[perk.prereq[0]], circleTop);
+        
+        // Recursively set the prerequisites as "clicked"
+        enhanceCircle(prereqCircle);
+        setCircleClicked(prereqCircle, prereqPerk);
       }
       
-      // Add a line between the clicked perk and its prerequisite
-      addHighlightedLine(perkCircles[perk.prereq[0]], circleTop);
-      
-      // Recursively set the prerequisites as "clicked"
-      enhanceCircle(prereqCircle);
-      setCircleClicked(prereqCircle, prereqPerk);
     }
   
     circleTop.clicked = true;

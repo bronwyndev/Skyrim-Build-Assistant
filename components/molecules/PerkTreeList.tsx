@@ -6,6 +6,7 @@ import { Perk, PerkTree } from '../../models/perk';
 type PropType = {
   perks: PerkTree['perks'];
   canvasSize: string;
+  setTotalCount: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const PerkTreeList: React.FC<PropType> = (props) => {
@@ -122,6 +123,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   
     if (!circleTop.clicked) {
       setCount(prevCount => prevCount + 1);
+      props.setTotalCount(prevCount => prevCount + 1);
     }
     circleTop.clicked = true;
   }
@@ -132,6 +134,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       resetCircle(circleTop);
   
       setCount(prevCount => prevCount - 1);
+      props.setTotalCount(prevCount => prevCount - 1);
       // Update the clicked status
       circleTop.clicked = false;
 

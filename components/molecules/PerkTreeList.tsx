@@ -10,8 +10,8 @@ type PropType = {
 
 const PerkTreeList: React.FC<PropType> = (props) => {
   const { perks } = props;
-  const canvasRef = useRef<fabric.Canvas | null>(null);
-  const { selectedObjects, editor, onReady } = useFabricJSEditor();
+  const { editor, onReady } = useFabricJSEditor();
+  const [count, setCount] = useState(0);
 
   // Create an object to store the fabric circles representing the perks
   const perkCircles: { [key: string]: fabric.Circle } = {};

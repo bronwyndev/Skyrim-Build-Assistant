@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor  } from 'fabricjs-react';
 import { Perk, PerkTree } from '../../models/perk';
@@ -120,6 +120,9 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       
     }
   
+    if (!circleTop.clicked) {
+      setCount(prevCount => prevCount + 1);
+    }
     circleTop.clicked = true;
   }
 
@@ -128,6 +131,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Reset the circle's properties to their default state
       resetCircle(circleTop);
   
+      setCount(prevCount => prevCount - 1);
       // Update the clicked status
       circleTop.clicked = false;
 
@@ -251,7 +255,12 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     }
   }, [FabricJSCanvas, perks]);
 
-  return <FabricJSCanvas className={`perktree__canvas perktree__canvas__${props.canvasSize}`} onReady={onReady} />;
+  return (
+    <>
+      <FabricJSCanvas className={`perktree__canvas perktree__canvas__${props.canvasSize}`} onReady={onReady} />
+      <div className="absolute top-0"><h2 className="text-white">Count: {count}</h2></div>
+    </>
+  );
 };
 
 export default PerkTreeList;

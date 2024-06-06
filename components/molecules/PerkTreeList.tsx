@@ -20,7 +20,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   // Get a circle by its ID
   // We can assume the id will contain 'CircleTop' as we will never directly interact with 'CircleBottom' (it is cosmetic only)
   function getCircleById(id: string): fabric.Circle | undefined {
-    return editor?.canvas.getObjects().find((obj) => obj.id === id + 'CircleTop') as fabric.Circle;
+    return editor?.canvas.getObjects().find((obj: { id: string; }) => obj.id === id + 'CircleTop') as fabric.Circle;
   }
   
   // Get a perk by its ID
@@ -29,7 +29,16 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   }
 
   // Create a circle object
-  function createCircle(x: number, y: number, radius: number, id: string, type: string, fill: string, shadow: string, circleBottom: fabric.Circle | null = null) {
+  function createCircle(
+    x: number, 
+    y: number, 
+    radius: number, 
+    id: string, 
+    type: string, 
+    fill: string, 
+    shadow: string, 
+    circleBottom: fabric.Circle | null
+  ) {
     return new fabric.Circle({
       left: x,
       top: y,
@@ -44,18 +53,44 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       circleBottom: circleBottom,
       hoverCursor: 'pointer',
     });
+
   }
 
-  function createPerkLine(startPerk: fabric.Circle, endPerk: fabric.Circle, lineColor: string, width: number, shadow: string, opacity: number) {
+  function createText(
+    name: string, 
+    x: number, 
+    y: number, 
+    radius: number
+  ) {
+    return new fabric.Text(name, {
+      left: x,
+      top: y + radius + 10, // position the text 10px below the circle
+      fontSize: 14,
+      originX: 'center',
+      originY: 'top',
+      selectable: false,
+    });
+  }
+
+  function createPerkLine(
+    startPerk: fabric.Circle, 
+    endPerk: fabric.Circle, 
+    lineColor: string, 
+    width: number, 
+    shadow: string, 
+    opacity: number, 
+    id: string | null
+  ) {
     return new fabric.Line(
       [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
       {
-        stroke: '#aaf9ff',
-        strokeWidth: 2,
+        stroke: lineColor,
+        strokeWidth: width,
         selectable: false,
-        shadow: '#aaf9ff 0px 0px 5px',
-        opacity: 0.5,
+        shadow: shadow,
+        opacity: opacity,
         hoverCursor: 'initial',
+        id: id,
       }
     );
   }
@@ -150,7 +185,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   }
 
   function removeLineById(id: string) {
-    const line = editor?.canvas.getObjects().find(obj => obj.id === id);
+    const line = editor?.canvas.getObjects().find((obj: { id: string; }) => obj.id === id);
     if (line) {
       editor?.canvas.remove(line);
     }
@@ -158,18 +193,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   // When a perk is clicked, highlight the line between it and its prerequisite
   function addHighlightedLine(prereqPerk: fabric.Circle, endPerk: fabric.Circle) {
-              
-    var line = new fabric.Line(
-      [prereqPerk.left, prereqPerk.top, endPerk.left, endPerk.top],
-      {
-        id: 'lineTo_'+endPerk.id,
-        stroke: '#aaf9ff',
-        strokeWidth: 2,
-        selectable: false,
-        shadow: '#aaf9ff 0px 0px 5px',
-        opacity: 1,
-      }
-    );
+    var line = createPerkLine(prereqPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 1, 'lineTo_'+endPerk.id);
     editor?.canvas.add(line);
     line.sendToBack();
   }
@@ -189,7 +213,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       // Create a layering circle
       // This one stacks below the main perk circle, to give a more dynamic glow
-      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px');
+      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px', perk.name);
       editor?.canvas.add(circleBottom);
 
       // Create the main circle for the perk
@@ -228,17 +252,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         const endPerk = perkCircles[perk.id];
 
         if (startPerk && endPerk) {
-          var line = new fabric.Line(
-            [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
-            {
-              stroke: '#aaf9ff',
-              strokeWidth: 2,
-              selectable: false,
-              shadow: '#aaf9ff 0px 0px 5px',
-              opacity: 0.5,
-              hoverCursor: 'initial',
-            }
-          );
+          var line = createPerkLine(startPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 0.5, null);
           line.sendToBack();
           // Add the line to the canvas
           editor?.canvas.add(line);

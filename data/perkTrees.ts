@@ -877,7 +877,7 @@ export const perkTrees: PerkTree[] = [
     id: 'twhd',
     name: 'Two-Handed',
     domain: 'Combat',
-    canvasSize: 'large',
+    canvasSize: 'standard',
     perks: [
       {
         id: '000BABE8',
@@ -892,7 +892,7 @@ export const perkTrees: PerkTree[] = [
         name: 'Limbsplitter',
         description: 'Attacks with battle axes cause extra bleeding damage.',
         ranks: 3,
-        coords: { x: 30, y: 55 },
+        coords: { x: 25, y: 60 },
         prereq: ['000BABE8'],
       },
       {
@@ -900,7 +900,7 @@ export const perkTrees: PerkTree[] = [
         name: 'Deep Wounds',
         description: 'Attacks with greatswords have a 10% chance of doing critical damage.',
         ranks: 3,
-        coords: { x: 70, y: 54 },
+        coords: { x: 75, y: 58 },
         prereq: ['000BABE8'],
       },
       {
@@ -908,7 +908,7 @@ export const perkTrees: PerkTree[] = [
         name: 'Skullcrusher',
         description: 'Attacks with warhammers ignore 25% of armor.',
         ranks: 3,
-        coords: { x: 80, y: 52 },
+        coords: { x: 90, y: 55 },
         prereq: ['000BABE8'],
       },
       {
@@ -924,7 +924,7 @@ export const perkTrees: PerkTree[] = [
         name: 'Devastating Blow',
         description: 'Standing power attacks do 25% bonus damage with a chance to decapitate your enemies.',
         ranks: 1,
-        coords: { x: 44, y: 45 },
+        coords: { x: 41, y: 46 },
         prereq: ['00052D51'],
       },
       {
@@ -932,7 +932,7 @@ export const perkTrees: PerkTree[] = [
         name: 'Great Critical Charge',
         description: 'Can do a two-handed power attack while sprinting that does double critical damage.',
         ranks: 1,
-        coords: { x: 56, y: 45 },
+        coords: { x: 58, y: 45 },
         prereq: ['00052D51'],
       },
       {

@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { fabric } from 'fabric';
 import { FabricJSCanvas, useFabricJSEditor  } from 'fabricjs-react';
 import { Perk, PerkTree } from '../../models/perk';
+import { ExtendedCircle, createCircle } from '../../utils/circle';
+import { ExtendedLine, createPerkLine } from '../../utils/line';
+import { ExtendedText, createText } from '../../utils/text';
 
 type PropType = {
   perks: PerkTree['perks'];
@@ -15,12 +18,12 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   const [count, setCount] = useState(0);
 
   // Create an object to store the fabric circles representing the perks
-  const perkCircles: { [key: string]: fabric.Circle } = {};
+  const perkCircles: { [key: string]: ExtendedCircle } = {};
 
   // Get a circle by its ID
   // We can assume the id will contain 'CircleTop' as we will never directly interact with 'CircleBottom' (it is cosmetic only)
-  function getCircleById(id: string): fabric.Circle | undefined {
-    return editor?.canvas.getObjects().find((obj: { id: string; }) => obj.id === id + 'CircleTop') as fabric.Circle;
+  function getCircleById(id: string): ExtendedCircle | undefined {
+    return editor?.canvas.getObjects().find((obj: any) => obj.id === id + 'CircleTop') as ExtendedCircle | undefined;
   }
   
   // Get a perk by its ID
@@ -28,87 +31,20 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     return perks.find((p) => p.id === id);
   }
 
-  // Create a circle object
-  function createCircle(
-    x: number, 
-    y: number, 
-    radius: number, 
-    id: string, 
-    type: string, 
-    fill: string, 
-    shadow: string, 
-    circleBottom: fabric.Circle | null
-  ) {
-    return new fabric.Circle({
-      left: x,
-      top: y,
-      radius: radius,
-      fill: fill,
-      shadow: shadow,
-      selectable: false,
-      originX: 'center',
-      originY: 'center',
-      id: id + type,
-      uniqueID: id,
-      circleBottom: circleBottom,
-      hoverCursor: 'pointer',
-    });
-
-  }
-
-  function createText(
-    name: string, 
-    x: number, 
-    y: number, 
-    radius: number
-  ) {
-    return new fabric.Text(name, {
-      left: x,
-      top: y + radius + 10, // position the text 10px below the circle
-      fontSize: 14,
-      originX: 'center',
-      originY: 'top',
-      selectable: false,
-    });
-  }
-
-  function createPerkLine(
-    startPerk: fabric.Circle, 
-    endPerk: fabric.Circle, 
-    lineColor: string, 
-    width: number, 
-    shadow: string, 
-    opacity: number, 
-    id: string | null
-  ) {
-    return new fabric.Line(
-      [startPerk.left, startPerk.top, endPerk.left, endPerk.top],
-      {
-        stroke: lineColor,
-        strokeWidth: width,
-        selectable: false,
-        shadow: shadow,
-        opacity: opacity,
-        hoverCursor: 'initial',
-        id: id,
-      }
-    );
-  }
-
   // Enhance the circle by increasing its radius and changing its color
-  function enhanceCircle(circleTop: fabric.Circle) {
+  function enhanceCircle(circleTop: ExtendedCircle) {
     circleTop.set({ radius: 9, fill: '#fffac6', shadow: 'yellow 0px 0px 10px' });
-    circleTop.circleBottom.set({ radius: 9, fill: 'red', shadow: 'red 0px 0px 15px' });
+      circleTop.circleBottom?.set({ radius: 9, fill: 'red', shadow: 'red 0px 0px 15px' });
   }
   
   // Reset the circle to its original state
-  function resetCircle(circleTop: fabric.Circle) {
+  function resetCircle(circleTop: ExtendedCircle) {
     circleTop.set({ radius: 7, fill: '#bcebfd', shadow: '#bcebfd 0px 0px 10px' });
-    circleTop.circleBottom.set({ radius: 7, fill: 'purple', shadow: 'purple 0px 0px 15px' });
+    circleTop.circleBottom?.set({ radius: 7, fill: 'purple', shadow: 'purple 0px 0px 15px' });
   }
 
   // Set the circle as clicked and recursively set its prerequisites as clicked
-  function setCircleClicked(circleTop: fabric.Circle, perk: Perk) {
+  function setCircleClicked(circleTop: ExtendedCircle, perk: Perk) {
     enhanceCircle(circleTop);
     if (!circleTop.clicked && perk.prereq) {
 
@@ -163,7 +99,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     circleTop.clicked = true;
   }
 
-  function resetCircleClicked(circleTop: fabric.Circle) {
+  function resetCircleClicked(circleTop: ExtendedCircle) {
     if (circleTop.clicked) {
       // Reset the circle's properties to their default state
       resetCircle(circleTop);
@@ -178,22 +114,25 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       const parents = perks.filter(parentPerk => parentPerk.prereq && parentPerk.prereq.includes(circleTop.uniqueID));
       if (parents) {
         parents.forEach((parent) => {
-          resetCircleClicked(getCircleById(parent.id));
+          const circle = getCircleById(parent.id);
+          if (circle !== undefined) {
+            resetCircleClicked(circle);
+          }
         });
       }
     }
   }
 
   function removeLineById(id: string) {
-    const line = editor?.canvas.getObjects().find((obj: { id: string; }) => obj.id === id);
+    const line = editor?.canvas.getObjects().find((obj: any) => obj.id === id);
     if (line) {
       editor?.canvas.remove(line);
     }
   }
 
   // When a perk is clicked, highlight the line between it and its prerequisite
-  function addHighlightedLine(prereqPerk: fabric.Circle, endPerk: fabric.Circle) {
-    var line = createPerkLine(prereqPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 1, 'lineTo_'+endPerk.id);
+  function addHighlightedLine(prereqPerk: ExtendedCircle, endPerk: ExtendedCircle) {
+    var line = createPerkLine(prereqPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 1, 'lineTo_'+endPerk.id, null);
     editor?.canvas.add(line);
     line.sendToBack();
   }
@@ -207,33 +146,37 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
     // Loop through the perks and create circles
     perks.forEach((perk) => {
-      // Convert percentage coordinates to pixel values
-      let x = perk.coords.x * editor?.canvas.width / 100;
-      let y = perk.coords.y * editor?.canvas.height / 100;
+
+      let x, y;
+      if (editor?.canvas.width && editor?.canvas.height) {
+        // Convert percentage coordinates to pixel values
+        x = perk.coords.x * editor.canvas.width / 100;
+        y = perk.coords.y * editor.canvas.height / 100;
+      } else {
+        x = perk.coords.x;
+        y = perk.coords.y;
+      }
 
       // Create a layering circle
       // This one stacks below the main perk circle, to give a more dynamic glow
-      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px', perk.name);
+      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px', null);
       editor?.canvas.add(circleBottom);
 
       // Create the main circle for the perk
       var circleTop = createCircle(x, y, 7, perk.id, 'CircleTop', '#bcebfd', '#bcebfd 0px 0px 10px', circleBottom);
 
-      // Add a 'mouse:down' event listener to the circle
+      // Determine if perk has already been clicked, then either enhance or reset the circle
       circleTop.on('mousedown', function() {
-        // Determine if perk has already been clicked, then either enhance or reset the circle
         !circleTop.clicked ? setCircleClicked(circleTop, perk) : resetCircleClicked(circleTop);
       });  
-      // Add a 'mouse:over' event listener to the circle
+      // Increase the glow of the circle when the mouse hovers over it
       circleTop.on('mouseover', function() {
-        // Increase the glow of the circle when the mouse hovers over it
         enhanceCircle(circleTop);
         editor?.canvas.renderAll();
       });
-      // Add a 'mouse:out' event listener to the circle
+      // Reset the circle when the mouse leaves
       circleTop.on('mouseout', function() {
         if (!circleTop.clicked) {
-          // Reset the circle when the mouse leaves
           resetCircle(circleTop);
           editor?.canvas.renderAll();
         }
@@ -252,7 +195,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         const endPerk = perkCircles[perk.id];
 
         if (startPerk && endPerk) {
-          var line = createPerkLine(startPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 0.5, null);
+          var line = createPerkLine(startPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 0.5, null, null);
           line.sendToBack();
           // Add the line to the canvas
           editor?.canvas.add(line);

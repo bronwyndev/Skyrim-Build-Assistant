@@ -184,6 +184,9 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Add the circle to the canvas
       editor?.canvas.add(circleTop);
 
+      var text = createText(perk.name, x, y, perk.id, 10);
+      editor?.canvas.add(text);
+
       // Store the circle in the perkCircles object
       perkCircles[perk.id] = circleTop;
     });

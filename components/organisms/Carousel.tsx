@@ -20,7 +20,9 @@ const Carousel: React.FC<PropType> = (props) => {
 
   return (
     <>
-    <div><h2 className="text-white">Total perk count: {totalCount}</h2></div>
+    <div className="total">
+      <h2 className="text-white">Total perk count: {totalCount}</h2>
+    </div>
     <section className="embla w-full">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">

@@ -11,7 +11,8 @@ function createText(
     id: string,
     radius: number
   ) {
-    let text = new ExtendedText(name, {
+    let formattedName = name.replace(' ', '\n');
+    let text = new ExtendedText(formattedName, {
       left: x,
       top: y + radius + 2, // position the text 2px below the circle
       fontSize: 12,

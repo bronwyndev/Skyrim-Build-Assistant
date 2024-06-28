@@ -111,7 +111,9 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       removeLineById('lineTo_'+circleTop.id);
 
-      const parents = perks.filter(parentPerk => parentPerk.prereq && parentPerk.prereq.includes(circleTop.uniqueID));
+      const parents = perks.filter(parentPerk => 
+        parentPerk.prereq && circleTop.uniqueID && parentPerk.prereq.includes(circleTop.uniqueID));
+        
       if (parents) {
         parents.forEach((parent) => {
           const circle = getCircleById(parent.id);
@@ -140,8 +142,12 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   // Let's get to drawing!
   function drawPerkTree() {
     // First let's set the dimensions of the canvas to fit that of its container.
-    if (editor?.canvas) {
-      editor.canvas.setDimensions({width:editor.canvas.wrapperEl?.clientWidth, height:editor.canvas.wrapperEl?.clientHeight});
+    if (editor?.canvas && 'wrapperEl' in editor.canvas) {
+      const wrapper = editor.canvas.wrapperEl as HTMLElement;
+      editor.canvas.setDimensions({
+        width: wrapper.clientWidth, 
+        height: wrapper.clientHeight
+      });
     }
 
     // Loop through the perks and create circles

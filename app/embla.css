@@ -31,7 +31,6 @@
     width: 100%;
   }
   .embla__slide__content {
-    border: 1px solid rgba(var(--color-primary), 0.2);
     height: var(--slide-height);
     position: relative
   }
@@ -42,7 +41,6 @@
   }
   .perktree__canvas .canvas-container {
     max-width: 23rem;
-    border: 1px solid rgb(255, 255, 255, 0.3);
   }
   .perktree__canvas.perktree__canvas__large .canvas-container {
     max-width: 38.75rem;

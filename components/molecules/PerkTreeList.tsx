@@ -113,7 +113,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       const parents = perks.filter(parentPerk => 
         parentPerk.prereq && circleTop.uniqueID && parentPerk.prereq.includes(circleTop.uniqueID));
-        
+
       if (parents) {
         parents.forEach((parent) => {
           const circle = getCircleById(parent.id);
@@ -178,13 +178,11 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Increase the glow of the circle when the mouse hovers over it
       circleTop.on('mouseover', function() {
         enhanceCircle(circleTop);
-        editor?.canvas.renderAll();
       });
       // Reset the circle when the mouse leaves
       circleTop.on('mouseout', function() {
         if (!circleTop.clicked) {
           resetCircle(circleTop);
-          editor?.canvas.renderAll();
         }
       });
       // Add the circle to the canvas
@@ -216,13 +214,13 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     Object.values(perkCircles).forEach(circle => {
       circle.bringToFront();
     });
+    
+    editor?.canvas.renderAll();
   }
 
   useEffect(() => {
-    if (editor?.canvas) {
       drawPerkTree();
-    }
-  }, [FabricJSCanvas, perks]);
+  }, [FabricJSCanvas, editor]);
 
   return (
     <>

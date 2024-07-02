@@ -20,8 +20,31 @@ body {
   }
 }
 
-.header-block::before {
-  position: relative;
+.header-block::before {  
+  position: absolute;
+  content: '';
+  display: block;
+  height: 30px;
+  aspect-ratio: 1 / 1;
+  background: #000;
+  border: 1px solid #fff;
+  z-index: -1;
+  left: -15px;
+  top: 5px;
+  transform: rotate(45deg);
+}
+.header-block::after {  
+  position: absolute;
+  content: '';
+  display: block;
+  height: 30px;
+  aspect-ratio: 1 / 1;
+  background: #000;
+  border: 1px solid #fff;
+  z-index: -1;
+  right: -15px;
+  top: 5px;
+  transform: rotate(45deg);
 }
 
 .total {

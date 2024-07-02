@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Header from "../components/organisms/Header";
+import Footer from "../components/organisms/Footer";
 import Carousel from "../components/organisms/Carousel";
 import { EmblaOptionsType } from 'embla-carousel'
 import { PerkTree } from "@/models/perk";
@@ -21,10 +22,11 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-t-12 p-b-12">
+      <div className="starry-sky"></div>
       <div className="w-full flex flex-1">
-        <Carousel slides={perkTrees} options={OPTIONS} />
         <Header totalCount={totalCount} />
         <Carousel slides={perkTrees} options={OPTIONS} setTotalCount={setTotalCount} />
+        <Footer />
       </div>
     </main>
   );

@@ -9,20 +9,17 @@ import useEmblaCarousel from 'embla-carousel-react'
 type PropType = {
   slides: Array<any>
   options?: EmblaOptionsType
+  setTotalCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Carousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props;
+  const { slides, options, setTotalCount } = props;
   const [emblaRef, emblaApi] = useEmblaCarousel(options);
-  const [totalCount, setTotalCount] = useState(0);
 
   const {prevBtnDisabled, nextBtnDisabled, onPrevButtonClick, onNextButtonClick} = usePrevNextButtons(emblaApi)
 
   return (
     <>
-    <div className="total">
-      <h2 className="text-white">Total perk count: {totalCount}</h2>
-    </div>
     <section className="embla w-full">
       <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">

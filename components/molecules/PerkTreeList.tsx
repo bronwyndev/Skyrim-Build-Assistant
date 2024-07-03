@@ -215,6 +215,9 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       circle.bringToFront();
     });
     
+    if (editor) {
+      editor.canvas.selection = false;
+    }
     editor?.canvas.renderAll();
   }
 

@@ -8,10 +8,10 @@ type PropType = {
 
 const Block: React.FC<PropType> = ({ heading, content }) => {
     return (
-        <div className="block flex flex-1">
+        <div className="block flex flex-1 gap-2 items-center">
             <Heading text={heading} level={2} />
             <div>
-                {content}
+                <p>{content}</p>
             </div>
         </div>
     );

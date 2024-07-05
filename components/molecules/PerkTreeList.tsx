@@ -106,6 +106,17 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   }
 
+  function loadSelectedPerks() {
+    const selectedPerks = JSON.parse(localStorage.getItem('selectedPerks') || '[]');
+    selectedPerks.forEach((perkId: string) => {
+      const circleTop = getCircleById(perkId);
+      const perk = getPerkById(perkId);
+      if (circleTop && perk) {
+        setCircleClicked(circleTop, perk);
+      }
+    });
+  }  
+
   function resetCircleClicked(circleTop: ExtendedCircle) {
     if (circleTop.clicked) {
       // Reset the circle's properties to their default state
@@ -230,6 +241,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   useEffect(() => {
       drawPerkTree();
+      loadSelectedPerks();
   }, [FabricJSCanvas, editor]);
 
   return (

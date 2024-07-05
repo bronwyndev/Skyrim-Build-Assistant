@@ -97,6 +97,13 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       props.setTotalCount(prevCount => prevCount + 1);
     }
     circleTop.clicked = true;
+    
+    const selectedPerks = JSON.parse(localStorage.getItem('selectedPerks') || '[]');
+    if (!selectedPerks.includes(perk.id)) {
+      selectedPerks.push(perk.id);
+      localStorage.setItem('selectedPerks', JSON.stringify(selectedPerks));
+    }
+
   }
 
   function resetCircleClicked(circleTop: ExtendedCircle) {

@@ -1,5 +1,6 @@
 'use client'
 
+import LoadScreen from "../components/organisms/LoadScreen";
 import Header from "../components/organisms/Header";
 import Footer from "../components/organisms/Footer";
 import Carousel from "../components/organisms/Carousel";
@@ -10,6 +11,7 @@ import { useState, useEffect } from "react";
 const OPTIONS: EmblaOptionsType = { loop: true }
 
 export default function Home() {
+  const [showLoadScreen, setShowLoadScreen] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [perkTrees, setPerkTrees] = useState<PerkTree[]>([]);
 
@@ -63,12 +65,18 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-t-12 p-b-12">
-      <div className="starry-sky" id="star-container"></div>
-      <div className="w-full flex flex-1">
-        <Header totalCount={totalCount} />
-        <Carousel slides={perkTrees} options={OPTIONS} setTotalCount={setTotalCount} />
-        <Footer />
-      </div>
+      {showLoadScreen && !selectedPerks ? (
+        <LoadScreen setShowLoadScreen={setShowLoadScreen} />
+      ) : (
+        <>
+          <div className="starry-sky" id="star-container"></div>
+          <div className="w-full flex flex-1">
+            <Header totalCount={totalCount} />
+            <Carousel slides={perkTrees} options={OPTIONS} setTotalCount={setTotalCount} />
+            <Footer />
+          </div>
+        </>
+      )}
     </main>
   );
 }

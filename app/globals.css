@@ -60,6 +60,12 @@ header p {
   transform: rotate(45deg);
 }
 
-.total {
+h1 {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+footer {
   position: absolute;
+  bottom: 0px;
 }

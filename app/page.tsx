@@ -14,6 +14,7 @@ export default function Home() {
   const [showLoadScreen, setShowLoadScreen] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [perkTrees, setPerkTrees] = useState<PerkTree[]>([]);
+  const selectedPerks = JSON.parse(localStorage.getItem('selectedPerks') || '[]');
 
   useEffect(() => {
     const starContainer = document.getElementById('star-container');

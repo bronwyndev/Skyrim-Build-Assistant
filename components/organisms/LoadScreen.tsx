@@ -1,12 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Heading from '../atoms/Heading';
+import { Class } from "@/models/class";
 
 type PropType = {
     setShowLoadScreen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LoadScreen: React.FC<PropType> = ({ setShowLoadScreen }) => {
-
+    const [classes, setClasses] = useState<Class[]>([]);
+    
+    useEffect(() => {
+        fetch('/api/classes')
+          .then((response) => response.json())
+          .then((data) => setClasses(data));
+      }, []);
+  
     return (
         <div className="load-screen w-full h-screen flex">
             <div className="load-screen__left w-1/3 p-20 h-full bg-black flex flex-col items-center justify-center">
@@ -16,9 +24,9 @@ const LoadScreen: React.FC<PropType> = ({ setShowLoadScreen }) => {
                 <p>Select a class</p>
                 <select>
                     <option value="none">None</option>
-                    <option value="warrior">Warrior</option>
-                    <option value="mage">Mage</option>
-                    <option value="thief">Thief</option>
+                    {classes.map((c) => (
+                        <option value={c.id}>{c.name}</option>
+                    ))}
                 </select>
                 <button onClick={() => setShowLoadScreen(false)}>Start</button>
             </div>

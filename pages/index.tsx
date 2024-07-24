@@ -14,7 +14,7 @@ export default function Home() {
   const [showLoadScreen, setShowLoadScreen] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [perkTrees, setPerkTrees] = useState<PerkTree[]>([]);
-  const selectedPerks = JSON.parse(localStorage.getItem('selectedPerks') || '[]');
+  //const selectedPerks = JSON.parse(localStorage.getItem('selectedPerks') || '[]');
 
   useEffect(() => {
     const starContainer = document.getElementById('star-container');
@@ -66,9 +66,6 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-t-12 p-b-12">
-      {showLoadScreen && !selectedPerks ? (
-        <LoadScreen setShowLoadScreen={setShowLoadScreen} />
-      ) : (
         <>
           <div className="starry-sky" id="star-container"></div>
           <div className="w-full flex flex-1">
@@ -77,7 +74,6 @@ export default function Home() {
             <Footer />
           </div>
         </>
-      )}
     </main>
   );
 }

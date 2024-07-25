@@ -1,18 +1,22 @@
-// pages/api/classes/[id]/perks.ts
+// pages/api/classes/[id]
 import { NextApiRequest, NextApiResponse } from 'next';
-import { classes } from '../../../../data/classes';
+import { NextResponse } from 'next/server';
+import { Class } from '../../../../models/class';
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query; // Get the class ID from the query parameter
+const sourceURL = process.env.API_URL + '/classes';
 
-  // Find the class by ID
-  const classData = classes.find(c => c.id === id);
+export const GET = async (req: Request) => {
+  const id = req.url.slice(req.url.lastIndexOf('/') + 1);
+  
+  const res = await fetch(`${sourceURL}`);
 
-  if (classData) {
-    // If the class is found, return it
-    res.status(200).json(classData);
-  } else {
-    // If the class is not found, return a 404 error
-    res.status(404).json({ message: 'Class not found' });
+  const classesData: Class[] = await res.json();
+
+  const classData = classesData.find((c) => c.id === id);
+
+  if (!classData) {
+    return NextResponse.json({ error: 'Class not found' }, { status: 404 });
   }
+
+  return NextResponse.json(classData);
 }

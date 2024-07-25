@@ -48,7 +48,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     enhanceCircle(circleTop);
     if (!circleTop.clicked && perk.prereq) {
 
-      var pathfound = false;
+      let pathfound = false;
       
       for (let i = 0; i < perk.prereq.length; i++) {
         
@@ -67,7 +67,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
           // Recursively set the prerequisites as "clicked"
           enhanceCircle(prereqCircle);
           setCircleClicked(prereqCircle, prereqPerk);
-          var pathfound = true;
+          pathfound = true;
         }
 
       }
@@ -152,7 +152,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
   // When a perk is clicked, highlight the line between it and its prerequisite
   function addHighlightedLine(prereqPerk: ExtendedCircle, endPerk: ExtendedCircle) {
-    var line = createPerkLine(prereqPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 1, 'lineTo_'+endPerk.id, null);
+    const line = createPerkLine(prereqPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 1, 'lineTo_'+endPerk.id, null);
     editor?.canvas.add(line);
     line.sendToBack();
   }
@@ -183,11 +183,11 @@ const PerkTreeList: React.FC<PropType> = (props) => {
 
       // Create a layering circle
       // This one stacks below the main perk circle, to give a more dynamic glow
-      var circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px', null);
+      const circleBottom = createCircle(x, y, 7, perk.id, 'CircleBottom', 'purple', 'purple 0px 0px 15px', null);
       editor?.canvas.add(circleBottom);
 
       // Create the main circle for the perk
-      var circleTop = createCircle(x, y, 7, perk.id, 'CircleTop', '#bcebfd', '#bcebfd 0px 0px 10px', circleBottom);
+      const circleTop = createCircle(x, y, 7, perk.id, 'CircleTop', '#bcebfd', '#bcebfd 0px 0px 10px', circleBottom);
 
       // Determine if perk has already been clicked, then either enhance or reset the circle
       circleTop.on('mousedown', function() {
@@ -206,7 +206,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
       // Add the circle to the canvas
       editor?.canvas.add(circleTop);
 
-      var text = createText(perk.name, x, y, perk.id, 10);
+      const text = createText(perk.name, x, y, perk.id, 10);
       editor?.canvas.add(text);
 
       // Store the circle in the perkCircles object
@@ -220,7 +220,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         const endPerk = perkCircles[perk.id];
 
         if (startPerk && endPerk) {
-          var line = createPerkLine(startPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 0.5, null, null);
+          const line = createPerkLine(startPerk, endPerk, '#aaf9ff', 2, '#aaf9ff 0px 0px 5px', 0.5, null, null);
           line.sendToBack();
           // Add the line to the canvas
           editor?.canvas.add(line);

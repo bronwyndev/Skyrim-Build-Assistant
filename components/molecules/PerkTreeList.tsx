@@ -5,6 +5,7 @@ import { Perk, PerkTree } from '../../models/perk';
 import { ExtendedCircle, createCircle } from '../../utils/circle';
 import { ExtendedLine, createPerkLine } from '../../utils/line';
 import { ExtendedText, createText } from '../../utils/text';
+import ReactGA from "react-ga4";
 
 type PropType = {
   perks: PerkTree['perks'];
@@ -43,9 +44,19 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     circleTop.circleBottom?.set({ radius: 7, fill: 'purple', shadow: 'purple 0px 0px 15px' });
   }
 
+  function sendSelectEventToGA(perk: Perk) {
+    ReactGA.event({
+      category: "Perk Selection",
+      action: "selected",
+      label: perk.name
+    });
+  }
+
   // Set the circle as clicked and recursively set its prerequisites as clicked
   function setCircleClicked(circleTop: ExtendedCircle, perk: Perk) {
     enhanceCircle(circleTop);
+    sendSelectEventToGA(perk);
+    
     if (!circleTop.clicked && perk.prereq) {
 
       let pathfound = false;

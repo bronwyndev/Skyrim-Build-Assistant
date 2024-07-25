@@ -5,6 +5,7 @@ import { Perk, PerkTree } from '../../models/perk';
 import { ExtendedCircle, createCircle } from '../../utils/circle';
 import { ExtendedLine, createPerkLine } from '../../utils/line';
 import { ExtendedText, createText } from '../../utils/text';
+import ReactGA from "react-ga4";
 
 type PropType = {
   perks: PerkTree['perks'];
@@ -34,7 +35,7 @@ const PerkTreeList: React.FC<PropType> = (props) => {
   // Enhance the circle by increasing its radius and changing its color
   function enhanceCircle(circleTop: ExtendedCircle) {
     circleTop.set({ radius: 9, fill: '#fffac6', shadow: 'yellow 0px 0px 10px' });
-      circleTop.circleBottom?.set({ radius: 9, fill: 'red', shadow: 'red 0px 0px 15px' });
+    circleTop.circleBottom?.set({ radius: 9, fill: 'red', shadow: 'red 0px 0px 15px' });
   }
   
   // Reset the circle to its original state
@@ -43,9 +44,19 @@ const PerkTreeList: React.FC<PropType> = (props) => {
     circleTop.circleBottom?.set({ radius: 7, fill: 'purple', shadow: 'purple 0px 0px 15px' });
   }
 
+  function sendSelectEventToGA(perk: Perk) {
+    ReactGA.event({
+      category: "Perk Selection",
+      action: "selected",
+      label: perk.name
+    });
+  }
+
   // Set the circle as clicked and recursively set its prerequisites as clicked
   function setCircleClicked(circleTop: ExtendedCircle, perk: Perk) {
     enhanceCircle(circleTop);
+    sendSelectEventToGA(perk);
+    
     if (!circleTop.clicked && perk.prereq) {
 
       let pathfound = false;
@@ -65,7 +76,6 @@ const PerkTreeList: React.FC<PropType> = (props) => {
           addHighlightedLine(perkCircles[perk.prereq[i]], circleTop);
           
           // Recursively set the prerequisites as "clicked"
-          enhanceCircle(prereqCircle);
           setCircleClicked(prereqCircle, prereqPerk);
           pathfound = true;
         }
@@ -86,7 +96,6 @@ const PerkTreeList: React.FC<PropType> = (props) => {
         addHighlightedLine(perkCircles[perk.prereq[0]], circleTop);
         
         // Recursively set the prerequisites as "clicked"
-        enhanceCircle(prereqCircle);
         setCircleClicked(prereqCircle, prereqPerk);
       }
       

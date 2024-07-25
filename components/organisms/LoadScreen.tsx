@@ -8,6 +8,8 @@ type PropType = {
 
 const LoadScreen: React.FC<PropType> = ({ setShowLoadScreen }) => {
     const [classes, setClasses] = useState<Class[]>([]);
+    const [selectedClassId, setSelectedClassId] = useState<string>('none');
+    const [perks, setPerks] = useState<any[]>([]);
     
     useEffect(() => {
         fetch('/api/classes')
@@ -15,6 +17,22 @@ const LoadScreen: React.FC<PropType> = ({ setShowLoadScreen }) => {
           .then((data) => setClasses(data));
       }, []);
   
+      useEffect(() => {
+        if (selectedClassId !== 'none') {
+            // Fetch the perks for the selected class
+            // This assumes you have an endpoint to fetch perks by class ID
+            fetch(`/api/classes/${selectedClassId}/perks`)
+              .then((response) => response.json())
+              .then((data) => setPerks(data));
+        } else {
+            setPerks([]); // Reset perks if 'None' is selected
+        }
+    }, [selectedClassId]);
+
+    const handleClassChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedClassId(event.target.value);
+    };
+
     return (
         <div className="load-screen w-full h-screen flex">
             <div className="load-screen__left w-1/3 p-20 h-full bg-black flex flex-col items-center justify-center">
@@ -22,10 +40,10 @@ const LoadScreen: React.FC<PropType> = ({ setShowLoadScreen }) => {
             </div>
             <div className="load-screen__right w-2/3 p-20 h-full bg-grey flex flex-col items-center justify-center">
                 <p>Select a class</p>
-                <select>
+                <select name='class' onChange={handleClassChange} value={selectedClassId}>
                     <option value="none">None</option>
                     {classes.map((c) => (
-                        <option value={c.id}>{c.name}</option>
+                        <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                 </select>
                 <button onClick={() => setShowLoadScreen(false)}>Start</button>

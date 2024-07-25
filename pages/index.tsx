@@ -1,5 +1,4 @@
-'use client'
-
+import React from 'react';
 import LoadScreen from "../components/organisms/LoadScreen";
 import Header from "../components/organisms/Header";
 import Footer from "../components/organisms/Footer";
